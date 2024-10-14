@@ -15,32 +15,6 @@ class SplashSreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Daily',
-        actions: [
-          // Sign In Text Button
-          TextButton(
-            onPressed: () {
-              if (kDebugMode) {
-                print("Sign In pressed");
-              }
-            },
-            child: const Text(
-              'Sign In',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.menu),
-            color: Colors.white,
-            onPressed: () {
-              print('The menu icon was clicked!');
-            },
-          ),
-        ],
-      ),
       body: Center(
         child: Text(
           'Daily',
