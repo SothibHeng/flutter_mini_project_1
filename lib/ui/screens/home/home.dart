@@ -8,12 +8,12 @@ import '../../widgets/card.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: DailyAppScreen(),
+    home: Home(),
   ));
 }
 
-class DailyAppScreen extends StatelessWidget {
-  const DailyAppScreen({super.key});
+class Home extends StatelessWidget {
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,13 @@ class DailyAppScreen extends StatelessWidget {
             child: const Text(
               'Sign In',
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
           IconButton(
             icon: const Icon(Icons.menu),
+            color: Colors.white,
             onPressed: () {
               print('The menu icon was clicked!');
             },

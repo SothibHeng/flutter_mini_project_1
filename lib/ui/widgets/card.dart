@@ -102,8 +102,8 @@ class PostCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Image.asset(
                         'assets/images/share.png',
-                        width: 24,
-                        height: 24,
+                        width: 25,
+                        height: 25,
                       ),
                     ),
                     Text(
@@ -116,8 +116,8 @@ class PostCard extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Image.asset(
                     'assets/images/favorite.png',
-                    width: 22,
-                    height: 22,
+                    width: 21,
+                    height: 21,
                   ),
                 ),
               ],

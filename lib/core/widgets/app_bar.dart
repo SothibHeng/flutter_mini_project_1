@@ -9,7 +9,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     this.actions,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor = const Color(0xFF253B95),
   });
 
   @override
@@ -23,6 +23,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               title,
               style: const TextStyle(
                 fontSize: 20,
+                color: Colors.white,
               ),
             ),
           ),
@@ -30,7 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: actions,
       backgroundColor: backgroundColor,
-      elevation: 4.0, // Optional: add shadow
+      elevation: 4.0,
     );
   }
 
