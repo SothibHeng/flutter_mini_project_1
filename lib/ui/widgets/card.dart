@@ -1,10 +1,11 @@
+
 import 'package:flutter/material.dart';
 
 class PostCard extends StatelessWidget {
   final String username;
   final String title;
   final String description;
-  final String imageUrl;
+  final String thumbnail;
   final int likes;
   final int comments;
 
@@ -13,7 +14,7 @@ class PostCard extends StatelessWidget {
     required this.username,
     required this.title,
     required this.description,
-    required this.imageUrl,
+    required this.thumbnail,
     required this.likes,
     required this.comments,
   });
@@ -57,10 +58,28 @@ class PostCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            // Post Image
+
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
-              child: Image.asset(imageUrl, fit: BoxFit.cover),
+              child: Image.network(
+                thumbnail,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 200,
+                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                          : null,
+                    ),
+                  );
+                },
+                errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                  return const Center(child: Text('Error loading image'));
+                },
+              ),
             ),
             const SizedBox(height: 10),
             // Post title

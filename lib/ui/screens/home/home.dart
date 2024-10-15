@@ -1,13 +1,17 @@
 import 'package:daily_app/ui/screens/sign_in/sign_in.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../../../core/widgets/app_bar.dart';
 import '../../../core/widgets/search.dart';
+import '../../../data/models/post_model.dart';
 import '../../widgets/card.dart';
 
 void main() {
   runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: Home(),
   ));
 }
@@ -15,16 +19,26 @@ void main() {
 class Home extends StatelessWidget {
   const Home({super.key});
 
+  static const String apiUrl = 'https://blog-api.automatex.dev/blogs';
+
+  Future<BlogResponse> fetchData() async {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      return BlogResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load blogs');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Daily',
         actions: [
-          // Sign In Text Button
           TextButton(
             onPressed: () {
-              // Navigate to the SignInPage when pressed
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SignIn()),
@@ -44,49 +58,49 @@ class Home extends StatelessWidget {
             icon: const Icon(Icons.menu),
             color: Colors.white,
             onPressed: () {
-              print('The menu icon was clicked!');
+              if (kDebugMode) {
+                print('The menu icon was clicked!');
+              }
             },
           ),
         ],
       ),
       backgroundColor: Colors.grey[50],
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-        children: [
-          CustomSearchBar(
-            hintText: 'Search...',
-            onChanged: (value) {
-              if (kDebugMode) {
-                print("Search input: $value");
-              }
-            },
-          ),
-          // Post Cards
-          const PostCard(
-            username: 'About Flutter',
-            title: 'Using Flutter to Develop App',
-            description: 'Creating an application with Flutter technology.',
-            imageUrl: 'assets/images/flutter.png',
-            likes: 99,
-            comments: 6,
-          ),
-          const PostCard(
-            username: 'Universe',
-            title: 'Flutter Features',
-            description: 'Getting started with Flutter for Beginners.',
-            imageUrl: 'assets/images/flutter.png',
-            likes: 150,
-            comments: 10,
-          ),
-          const PostCard(
-            username: 'Flutter Dev',
-            title: 'Dart Null Safety',
-            description: 'Why null safety is important in Flutter development.',
-            imageUrl: 'assets/images/flutter.png',
-            likes: 200,
-            comments: 15,
-          ),
-        ],
+      body: FutureBuilder<BlogResponse>(
+        future: fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.blogs.isEmpty) {
+            return Center(child: Text('No data found'));
+          } else {
+            final blogs = snapshot.data!.blogs;
+            return ListView(
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              children: [
+                CustomSearchBar(
+                  hintText: 'Search...',
+                  onChanged: (value) {
+                    if (kDebugMode) {
+                      print("Search input: $value");
+                    }
+                  },
+                ),
+                for (var blog in blogs)
+                  PostCard(
+                    username: blog.author.username,
+                    title: blog.title,
+                    description: blog.content,
+                    thumbnail: blog.thumbnail,
+                    likes: blog.numberOfLikes,
+                    comments: blog.numberOfBookmarks,
+                  ),
+              ],
+            );
+          }
+        },
       ),
     );
   }
